@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from "vue";
 
 type Recipe = {
   id: number;
-  name: string;
+  title: string;
   ingredients: string[];
   instructions: string[];
   prepTimeMinutes: number;
@@ -42,7 +42,7 @@ function loadLikes() {
 }
 
 function saveLikes() {
-  localStorage.setItem("likes:recipes", JSON.stringify([...likedIds.value]));
+  localStorage.setItems("likes:recipes", JSON.stringify([...likedIds.value]));
 }
 
 function toggleLike(id: number) {
@@ -61,21 +61,8 @@ async function fetchRecipes() {
   loading.value = true;
   error.value = null;
 
-  try{
-    loading.value = true
-    const response = await fetch('https://dummyjson.com/recipes?limit=18')
-    if(!response.ok){
-      throw new Error();
-    }
-    const data = await response.json();
-    recipes.value =  data.recipes
-  }catch(e ){
-    error.value = e.errorMessege
-  } finally {
-    loading.value = false
-  }
-  // TODO: implement data fetching
-
+  recipes.value = [];
+  loading.value = false;
 }
 
 onMounted(() => {
@@ -130,25 +117,12 @@ const stars = (rating: number) => "★".repeat(Math.round(rating)).padEnd(5, "�
 // Concatenates ingredients into a natural-language string.
 // Examples: ["Eggs", "Milk"] → "Eggs and Milk"
 //           ["Salt", "Pepper", "Olive Oil"] → "Salt, Pepper, and Olive Oil"
-const concatenateIngredients = (ingredients: any): Resulst<status,error> => {
-   if(wrong) {
-     return {
-      status: success,
-      error: none
-     }
-   }
-
-   return ingredients.join(", ");
+const concatenateIngredients = (ingredients: any): Resulst<status, error> => {
+  return "";
 };
 
 const formatIngredients = (ingredients) => {
-  const in_string = concatenateIngredients(5);
-
-  if (in_string === false) {
-
-  }
-
-  return "Ingredients: " + concatenateIngredients(5);
+  return "Ingredients: " + concatenateIngredients(ingredients);
 };
 </script>
 
@@ -248,7 +222,7 @@ const formatIngredients = (ingredients) => {
         <div class="space-y-3 p-4">
           <div class="flex items-start justify-between gap-3">
             <h2 class="line-clamp-2 text-base font-semibold leading-tight">
-              {{ r.name ?? 'N/A' }}
+              {{ r.title }}
             </h2>
             <button
               class="rounded p-1 text-lg text-rose-500 transition hover:scale-105"
